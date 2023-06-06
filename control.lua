@@ -27,7 +27,7 @@ script.on_event(defines.events.on_player_selected_area, function(event) --Pick u
                 end
             end
         end
-        game.print(string.format("Total %s Captured: %s", Resource_Name, Format_Int(Resource_Count)))
+        game.print(string.format("Total %s Captured: %s", {"item-name." .. Resource_Name}, Format_Int(Resource_Count)))
     end
 end)
 
