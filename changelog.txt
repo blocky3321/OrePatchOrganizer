@@ -1,4 +1,17 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.1.2
+Date: 2023-10-12
+  Changes:
+    - Restructure logic
+    - Allow Fluids movement as well as Solids
+    - Allow surface limitation
+    - Add compatibility for 'K2 Hard Resource', 'K2 Oil', 'K2 Quarry'
+---------------------------------------------------------------------------------------------------
+Version: 0.1.1
+Date: 2023-06-06
+  Changes:
+    - Mining Drills detect Pasted Ores
+---------------------------------------------------------------------------------------------------
 Version: 0.1.0
 Date: 2023-06-06
   Changes:
