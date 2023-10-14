@@ -40,9 +40,12 @@ script.on_event(defines.events.on_player_selected_area, function(event)
 
                 --Handle Solids
                 if settings.startup["resource-patch-organizer-allow-solids"].value == true then
-                    if resource.prototype.resource_category == 'basic-solid' or    --Vanilla Ores
-                        resource.prototype.resource_category == 'hard-resource' or --K2 Hard Resource
-                        resource.prototype.resource_category == 'kr-quarry' then   --K2 Quarry
+                    if resource.prototype.resource_category == 'basic-solid' or                    --Vanilla Ores
+                        resource.prototype.resource_category == 'hard-resource' or                 --K2 Hard Resource
+                        resource.prototype.resource_category == 'kr-quarry' or                     --K2 Quarry
+                        resource.prototype.resource_category == 'vtk-deepcore-mining-crack' or     --Vortek Deep Core Mining p.1
+                        resource.prototype.resource_category == 'vtk-deepcore-mining-ore-patch' or --Vortek Deep Core Mining p.2
+                        false then
                         --[[
                             resource.prototype.resource_category == 'se-core-mining' or --Space Exploration Core Mining
                             skip se-core-mining due to multi-part (Fissure, Smoke, Resource)
@@ -57,7 +60,8 @@ script.on_event(defines.events.on_player_selected_area, function(event)
                 --Handle fluids
                 if settings.startup["resource-patch-organizer-allow-fluids"].value == true then
                     if resource.prototype.resource_category == 'basic-fluid' or --Vanilla Fluid
-                        resource.prototype.resource_category == 'oil' then      --K2 Oil
+                        resource.prototype.resource_category == 'oil' or        --K2 Oil
+                        false then
                         --Only set category if Resource is approved fluid for collection
                         Resource_Category = resource.prototype.resource_category
                     end
@@ -66,12 +70,16 @@ script.on_event(defines.events.on_player_selected_area, function(event)
 
             --Set if resource is Spaced (Oil patches) or Spread (Raw Ores)
             if Resource_Category == 'basic-solid' or
-                Resource_Category == 'hard-resource' then
+                Resource_Category == 'hard-resource' or
+                false then
                 Resource_Handler = 'spread'
             elseif Resource_Category == 'basic-fluid' or
                 Resource_Category == 'oil' or
                 Resource_Category == 'se-core-mining' or
-                Resource_Category == 'kr-quarry' then
+                Resource_Category == 'vtk-deepcore-mining-crack' or
+                Resource_Category == 'vtk-deepcore-mining-ore-patch' or
+                Resource_Category == 'kr-quarry' or
+                false then
                 Resource_Handler = 'spaced'
             end
 
@@ -129,16 +137,7 @@ script.on_event(defines.events.on_player_alt_selected_area, function(event) --Pr
                     return
                 end
             end
-            --[[
-    TODO:
-    1. Configure printing based on Resource_Category
-        a. Figure out width of SE Core Miner and K2 Quarry to ensure optimal separation
-            I. potentially change setting to set amount of tiles between large buildings (Pumpjack, Core Miner, Quarry) instead of a fixed width
-    2. Implement special printing
-        a. Basic Ores
-        b. Basic Fluids (Water/Oil)
-        c. Special Ores (Quarry/Core Miner) use logic from Fluids
-]]
+
             for _, resource in pairs(event.entities) do
                 if resource.type == "resource" then
                     game.print({ "", "Cannot print ", Resource_Name_Localised, ". Other Resources are in the way" })
@@ -223,6 +222,12 @@ script.on_event(defines.events.on_player_alt_selected_area, function(event) --Pr
                 elseif Resource_Category == 'kr-quarry' then
                     --Quarry Drill is 7x7
                     tileGrid = settings.startup["resource-patch-organizer-special-ore-grid"].value + 7
+                elseif Resource_Category == 'vtk-deepcore-mining-crack' then
+                    --Vortek Deep Core Mining Drill is 9x9
+                    tileGrid = settings.startup["resource-patch-organizer-special-ore-grid"].value + 9
+                elseif Resource_Category == 'vtk-deepcore-mining-ore-patch' then
+                    --Vortek Moho Mining Drill is 5x5
+                    tileGrid = settings.startup["resource-patch-organizer-special-ore-grid"].value + 5
                 end
 
                 local totalX = math.floor((event.area.right_bottom.x - event.area.left_top.x) / tileGrid)
@@ -238,25 +243,12 @@ script.on_event(defines.events.on_player_alt_selected_area, function(event) --Pr
                 else
                     local resourcesPerCell = math.max(math.ceil(Resource_Count / (totalX * totalY)), 1)
 
-                    --[[
-                    if MyDebug then
-                        game.print(string.format("%s Resources per Cell", resourcesPerCell))
-                        game.print(string.format("%s Total X", totalX))
-                        game.print(string.format("%s Total Y", totalY))
-                    end
-                    ]]
-
                     --Iterate via int Variables instead of direct Event X/Y because of rounding and causing an extra instance placing
                     --Iterate x axis
                     for x = 0, (totalX - 1) do
                         --Iterate y axis
                         for y = 0, (totalY - 1) do
                             --Print Fluids
-                            --[[
-                            if MyDebug then
-                                game.print(string.format("%s X - %s Y - %s Resouce Count", x, y, Resource_Count))
-                            end
-                            ]]
                             event.surface.create_entity({
                                 name = Resource_Name,
                                 amount = math.min(Resource_Count, resourcesPerCell),

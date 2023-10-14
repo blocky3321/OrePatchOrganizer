@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.1.3
+Date: 2023-10-14
+  Changes:
+    - Added compatibility for Vortek Deep Core Mining
+    - Added optional dependencies to show compatibility
+---------------------------------------------------------------------------------------------------
 Version: 0.1.2
 Date: 2023-10-12
   Changes:
