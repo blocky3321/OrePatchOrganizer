@@ -14,6 +14,26 @@ Resource_Handler = ""
 
 MyDebug = false
 
+--Functions
+function validate_collision(tile)
+    --Space tiles
+    if game.active_mods["space-exploration"] then
+        --Layer 17 and 18 for empty space, layer 18 only for actual tiles
+        if not tile.collides_with("layer-17") and tile.collides_with("layer-18") then
+            return true
+        else
+            return false
+        end
+    end
+
+    --Ground tiles on planets/base game
+    if tile.collides_with("ground-tile") then
+        return true
+    else
+        return false
+    end
+end
+
 --Event Handlers
 
 --Ore Collection
@@ -151,7 +171,7 @@ script.on_event(defines.events.on_player_alt_selected_area, function(event) --Pr
             for x = event.area.left_top.x, event.area.right_bottom.x do
                 --iterate y axis
                 for y = event.area.left_top.y, event.area.right_bottom.y do
-                    if event.surface.get_tile(x, y).collides_with("ground-tile") then
+                    if validate_collision(event.surface.get_tile(x, y)) then
                         validCells = validCells + 1
                     else
                         invalidCells = invalidCells + 1
@@ -190,7 +210,7 @@ script.on_event(defines.events.on_player_alt_selected_area, function(event) --Pr
                 for x = event.area.left_top.x, event.area.right_bottom.x do
                     --iterate y axis
                     for y = event.area.left_top.y, event.area.right_bottom.y do
-                        if event.surface.get_tile(x, y).collides_with("ground-tile") then
+                        if validate_collision(event.surface.get_tile(x, y)) then
                             if Resource_Count ~= 0 then --Safety Check
                                 --Print Ore
                                 event.surface.create_entity({
