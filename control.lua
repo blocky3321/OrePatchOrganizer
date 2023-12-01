@@ -16,22 +16,15 @@ MyDebug = false
 
 --Functions
 function validate_collision(tile)
-    --Space tiles
-    if game.active_mods["space-exploration"] then
+    if tile.collides_with("ground-tile") then
+        return true --Ground tiles on planets/base game
+    elseif game.active_mods["space-exploration"] then 
         --Layer 17 and 18 for empty space, layer 18 only for actual tiles
-        if not tile.collides_with("layer-17") and tile.collides_with("layer-18") then
-            return true
-        else
-            return false
+        if not tile.collides_with("layer-17") and tile.collides_with("layer-18") then 
+            return true --Space tiles
         end
     end
-
-    --Ground tiles on planets/base game
-    if tile.collides_with("ground-tile") then
-        return true
-    else
-        return false
-    end
+    return false --Everything else
 end
 
 --Event Handlers
