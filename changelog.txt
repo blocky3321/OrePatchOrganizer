@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.1.5
+Date: 2023-12-08
+  Changes:
+    - Restructure codebase to be clearer and more modular
+    - Changed settings to be Map/Runtime settings allowing modification mid-game
+    - Removed Fluid/Special grid size for a universal spacing (It still accounts for machine size)
+    - Changed placement process for fluids, it now places the Top Left patch in the Top Left tile you select (No longer sometimes in, sometimes out)
+  Optimisations:
+    - Moved some logic that only needed to be set once to outside of loops 
+---------------------------------------------------------------------------------------------------
 Version: 0.1.4
 Date: 2023-12-01
   Changes:
