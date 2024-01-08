@@ -1,7 +1,11 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.7
-Date: ????
+Date: 2024-01-08
   Changes:
+    - Fixed some Fluid Placement rules
+    - Resources are allowed to intermingle now
+  Optimisations:
+    - Expanded resource collision to future proof. Now uses vanilla 'can_place_entity' rather than checking specific collision layers.
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.6
 Date: 2023-12-08

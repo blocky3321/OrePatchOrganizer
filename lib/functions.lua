@@ -6,10 +6,11 @@ Resource_Organizer = {
     Category = "", --[[@as string]]       --Resource category
     Name_Localised = "", --[[@as string]] --Localised Name
     Handler = "", --[[@as string]]        --Spread or Spaced
-    Grid_Spacing = 0 --[[@as integer]],   --Spacing between special buildings
-    LockSurface = true --[[@as boolean]],
-    AllowSolids = true --[[@as boolean]],
-    AllowFluids = true --[[@as boolean]]
+    Grid_Spacing = 0, --[[@as integer]]   --Spacing between special buildings
+    LockSurface = true, --[[@as boolean]]
+    AllowSolids = true, --[[@as boolean]]
+    AllowFluids = true, --[[@as boolean]]
+    AllowMixing = true --[[@as boolean]]
 }
 
 --Set Resource_Organizer settings, allowing run-time modifications
@@ -18,6 +19,7 @@ local function UpdateStoredSettings()
     Resource_Organizer.LockSurface = settings.global["resource-patch-organizer-lock-surface"].value
     Resource_Organizer.AllowSolids = settings.global["resource-patch-organizer-allow-solids"].value
     Resource_Organizer.AllowFluids = settings.global["resource-patch-organizer-allow-fluids"].value
+    Resource_Organizer.AllowMixing = settings.global["resource-patch-organizer-allow-mixing"].value
 end
 
 --- @param InputString string String To Format To Camel Case
@@ -146,22 +148,6 @@ local function FormatInt(number)
     return minus .. int:reverse():gsub("^,", "") .. fraction
 end
 
---- Validate if a tile collides with a specific layer
---- @param tile LuaTile the tile to verify collision
---- @return boolean collision Boolean if a collision is detected
-local function ValidateLayerCollision(tile)
-    if tile.collides_with("ground-tile") then
-        return true --Ground tiles on planets/base game
-    elseif game.active_mods["space-exploration"] then
-        --Layer 17 and 18 for empty space, layer 18 only for actual tiles
-        ---@diagnostic disable-next-line: param-type-mismatch
-        if not tile.collides_with("layer-17") and tile.collides_with("layer-18") then
-            return true --Space tiles
-        end
-    end
-    return false --Everything else
-end
-
 -- Collect Resource
 function On_Player_Selected_Area(event)
     --Only handle the ore patch organiser
@@ -174,8 +160,8 @@ function On_Player_Selected_Area(event)
 
         --Surface Lock
         if Resource_Organizer.LockSurface then
-            if event.surface ~= Resource_Organizer.Surface and --Different surface from previous collection
-                Resource_Organizer.Surface ~= "" then          --Surface hasn't been set, new collection
+            if event.surface.name ~= Resource_Organizer.Surface and --Different surface from previous collection
+                Resource_Organizer.Surface ~= "" then               --Surface hasn't been set, new collection
                 game.print({ "", "Invalid Surface. Resources were previously collected from ",
                     ConvertStringToCamelCase(Resource_Organizer.Surface) })
                 return
@@ -256,7 +242,7 @@ function On_Player_Selected_Area(event)
 
                     --3. Surface
                     if Resource_Organizer.Surface == "" then
-                        Resource_Organizer.Surface = event.surface
+                        Resource_Organizer.Surface = event.surface.name
                     end
                 end
             end
@@ -288,29 +274,29 @@ function On_Player_Alt_Selected_Area(event)
         if Resource_Organizer.Name == "" or Resource_Organizer.count == 0 then return end
 
         -- Different surface from previous collection
-        if Resource_Organizer.LockSurface and event.surface ~= Resource_Organizer.Surface then
+        if Resource_Organizer.LockSurface and event.surface.name ~= Resource_Organizer.Surface then
             game.print({ "", "Invalid Surface. Resources were previously collected from ",
                 ConvertStringToCamelCase(Resource_Organizer.Surface) })
             return
         end
 
-        -- Other resources are in the way
-        -- Easier to say 'No' than try work around them
-        for _, resource in pairs(event.entities) do
-            if resource.type == "resource" then
-                game.print({ "", "Cannot print ", Resource_Organizer.Name_Localised,
-                    ". Other Resources are in the way" })
-                return
+        -- Other resources are in the way - Check setting
+        if not Resource_Organizer.AllowMixing then
+            for _, resource in pairs(event.entities) do
+                if resource.type == "resource" then
+                    game.print({ "", "Cannot print ", Resource_Organizer.Name_Localised,
+                        ". Other Resources are in the way" })
+                    return
+                end
             end
         end
-
 
         --Count valid and invalid tiles in area
         local validCells = 0
         local invalidCells = 0
         for x = event.area.left_top.x, event.area.right_bottom.x do     --iterate x axis
             for y = event.area.left_top.y, event.area.right_bottom.y do --iterate y axis
-                if ValidateLayerCollision(event.surface.get_tile(x, y)) then
+                if event.surface.can_place_entity { name = Resource_Organizer.Name, position = { x, y } } then
                     validCells = validCells + 1
                 else
                     invalidCells = invalidCells + 1
@@ -345,7 +331,7 @@ function On_Player_Alt_Selected_Area(event)
             for x = event.area.left_top.x, event.area.right_bottom.x do     --Iterate x axis
                 for y = event.area.left_top.y, event.area.right_bottom.y do --iterate y axis
                     -- Check resources to print, and not colliding
-                    if Resource_Organizer.Count ~= 0 and ValidateLayerCollision(event.surface.get_tile(x, y)) then
+                    if Resource_Organizer.Count ~= 0 and event.surface.can_place_entity { name = Resource_Organizer.Name, position = { x, y } } then
                         --Print resource
                         event.surface.create_entity({
                             name = Resource_Organizer.Name,
@@ -392,8 +378,8 @@ function On_Player_Alt_Selected_Area(event)
 
             --100 tiles with tileGrid of 6 (3 for Pumpjack, 3 for Spacing) = 16.66, Rounded down to 16
             --i.e. 100x100 = 16x16 grid of fluid placement options = 96x96 used space
-            local totalX = math.floor((event.area.right_bottom.x - event.area.left_top.x) / tileGrid)
-            local totalY = math.floor((event.area.right_bottom.y - event.area.left_top.y) / tileGrid)
+            local totalX = math.floor((event.area.right_bottom.x - event.area.left_top.x + machineSize) / tileGrid)
+            local totalY = math.floor((event.area.right_bottom.y - event.area.left_top.y + machineSize) / tileGrid)
 
 
             if totalX <= 0 or totalY <= 0 then
