@@ -1,3 +1,5 @@
+require "lib.resourceData"
+
 Resource_Organizer = {
     Name = "", --[[@as string]]           --In-Game Name
     Count = 0, --[[@as integer]]          --Amount of resources caught
@@ -10,7 +12,8 @@ Resource_Organizer = {
     LockSurface = true, --[[@as boolean]]
     AllowSolids = true, --[[@as boolean]]
     AllowFluids = true, --[[@as boolean]]
-    AllowMixing = true --[[@as boolean]]
+    AllowMixing = true, --[[@as boolean]]
+    MachineSize = 0 --[[@as integer]]
 }
 
 --Set Resource_Organizer settings, allowing run-time modifications
@@ -170,93 +173,32 @@ function On_Player_Selected_Area(event)
 
         --Loop all resources in Event
         for _, resource in pairs(event.entities) do
-            -- 1. Populate 'Category' with resource type (basic-solid, basic-fluid, oil, kr-quarry etc)
-            --Validate Category for initial collection
-            --If/Then/End to prevent excessive reuse when looping entities
-            if Resource_Organizer.Category == "" then
-                --Handle Solids
-                if Resource_Organizer.AllowSolids then
-                    if resource.prototype.resource_category == 'basic-solid' or                    --Vanilla Ores
-                        resource.prototype.resource_category == 'hard-resource' or                 --K2 Hard Resource
-                        resource.prototype.resource_category == 'kr-quarry' or                     --K2 Quarry
-                        resource.prototype.resource_category == 'vtk-deepcore-mining-crack' or     --Vortek Deep Core Mining p.1
-                        resource.prototype.resource_category == 'vtk-deepcore-mining-ore-patch' or --Vortek Deep Core Mining p.2
-                        false then
-                        --[[
-                            TODO:
-                            resource.prototype.resource_category == 'se-core-mining' or --Space Exploration Core Mining
-                            skip se-core-mining due to multi-part (Fissure, Smoke, Resource)
-                            Once I figure this out, allow moving of Core Miners
-                        ]]
 
-                        --Only set category if Resource is approved solid for collection
-                        Resource_Organizer.Category = resource.prototype.resource_category
-                    end
-                end
-
-                --Handle fluids
-                if Resource_Organizer.AllowFluids then
-                    if resource.prototype.resource_category == 'basic-fluid' or --Vanilla Fluid
-                        resource.prototype.resource_category == 'oil' or        --K2 Oil
-                        false then
-                        --Only set category if Resource is approved fluid for collection
-                        Resource_Organizer.Category = resource.prototype.resource_category
-                    end
-                end
-            end
-
-            -- Contain remaining validation within Category If/Then/End, to prevent extra checks that don't need to be done
+            --Contain validation within Category If/Then/End, to prevent extra checks
             --Category = "" - Do nothing, not valid collection
             --Category != "" - Collect resources/validate
-            if Resource_Organizer.Category ~= "" then
-                -- 2. Populate Handler as Spaced|Spread (Oil is Spaced out, Ores are spread etc)
-                if Resource_Organizer.Handler == "" then
-                    --Set if resource is Spaced (Oil patches/some modded types) or Spread (Raw Ores)
-                    if Resource_Organizer.Category == 'basic-solid' or
-                        Resource_Organizer.Category == 'hard-resource' or
-                        false then
-                        Resource_Organizer.Handler = 'spread'
-                    elseif Resource_Organizer.Category == 'basic-fluid' or
-                        Resource_Organizer.Category == 'oil' or
-                        Resource_Organizer.Category == 'se-core-mining' or
-                        Resource_Organizer.Category == 'vtk-deepcore-mining-crack' or
-                        Resource_Organizer.Category == 'vtk-deepcore-mining-ore-patch' or
-                        Resource_Organizer.Category == 'kr-quarry' or
-                        false then
-                        Resource_Organizer.Handler = 'spaced'
-                    end
-                end
-
-                -- 3. Populate Name,Category,Surface
-                if Resource_Organizer.Name == "" or
-                    Resource_Organizer.Name_Localised == "" or
-                    Resource_Organizer.Surface == "" then
-                    --1. Base Name
-                    if Resource_Organizer.Name == "" then
-                        Resource_Organizer.Name = resource.name
-                    end
-                    --2. Localised Name
-                    if Resource_Organizer.Name_Localised == "" then
-                        Resource_Organizer.Name_Localised = resource.localised_name
-                    end
-
-                    --3. Surface
-                    if Resource_Organizer.Surface == "" then
-                        Resource_Organizer.Surface = event.surface.name
-                    end
+            if Resource_Organizer.Category == "" then
+                SetResourceOrganizer(resource)
+                if Resource_Organizer.Category ~= "" then
+                    Resource_Organizer.Surface = event.surface.name
                 end
             end
             -- At this point all validation and variables are set
 
             -- Resource found must match Name
             if resource.name == Resource_Organizer.Name then
+
                 Resource_Organizer.Count = Resource_Organizer.Count + resource.amount
                 resource.destroy()
             end
         end
 
-        --Show the user what we've collected
-        game.print({ "", "Total ", Resource_Organizer.Name_Localised, " Captured: ", FormatInt(Resource_Organizer.Count) })
+        if Resource_Organizer.Count ~= 0 then
+            --Show the user what we've collected
+            game.print({ "", "Total ", Resource_Organizer.Name_Localised, " Captured: ", FormatInt(Resource_Organizer.Count) })
+        end
+
+        --TODO: Save Data
     end
 end
 
@@ -315,7 +257,7 @@ function On_Player_Alt_Selected_Area(event)
         if Resource_Organizer.Handler == 'spaced' and invalidCells ~= 0 then
             --Spaced Resources must be placed on fully empty ground
             --This is for pure laziness to prevent calculating collisions
-            game.print({ "", "Fluids must have fully empty ground. Can't print ", FormatInt(Resource_Organizer
+            game.print({ "", "Spaced Resources must have fully empty ground. Can't print ", FormatInt(Resource_Organizer
                 .Count),
                 " ", Resource_Organizer.Name_Localised })
             return
@@ -348,31 +290,14 @@ function On_Player_Alt_Selected_Area(event)
             for _, e in pairs(event.surface.find_entities_filtered { area = event.area, type = "mining-drill" }) do
                 e.update_connections()
             end
+
         elseif Resource_Organizer.Handler == 'spaced' then
             --Print fluids in an even grid
             local tileGrid = 0 --[[@as integer]]
-            local machineSize = 0 --[[@as integer]]
-            if Resource_Organizer.Category == 'basic-fluid' then
-                --Default fluid types Pumpjacks are 3x3
-                machineSize = 3
-            elseif Resource_Organizer.Category == 'oil' then
-                --K2 Oil Pumpjacks are 3x3
-                machineSize = 3
-            elseif Resource_Organizer.Category == 'se-core-mining' then
-                --Core miner is 11x11
-                machineSize = 11
-            elseif Resource_Organizer.Category == 'kr-quarry' then
-                --Quarry Drill is 7x7
-                machineSize = 7
-            elseif Resource_Organizer.Category == 'vtk-deepcore-mining-crack' then
-                --Vortek Deep Core Mining Drill is 9x9
-                machineSize = 9
-            elseif Resource_Organizer.Category == 'vtk-deepcore-mining-ore-patch' then
-                --Vortek Moho Mining Drill is 5x5
-                machineSize = 5
-            end
+            local machineSize = Resource_Organizer.MachineSize
             tileGrid = Resource_Organizer.Grid_Spacing + machineSize
 
+            --TODO: Possibly upgrade to allow snapping to fixed grid sizes (Chunk/half chunk etc)
             local newArea = SnapArea(event.area, 1)
             --math.ceil to 'include' the bottom right tile in the selection, otherwise math.floor excludes it requiring the player to select beyond the area
 
@@ -391,7 +316,6 @@ function On_Player_Alt_Selected_Area(event)
                 })
             else
                 Resource_Organizer.CountPerCell = math.max(math.ceil(Resource_Organizer.Count / (totalX * totalY)), 1)
-
 
                 --Iterate via int Variables instead of direct Event X/Y because of rounding and causing an extra instance placing
                 --Iterate x axis
@@ -413,12 +337,6 @@ function On_Player_Alt_Selected_Area(event)
         end
 
         --Finish by removing the existing details
-        Resource_Organizer.Name = ""
-        Resource_Organizer.Count = 0
-        Resource_Organizer.CountPerCell = 0
-        Resource_Organizer.Surface = ""
-        Resource_Organizer.Category = ""
-        Resource_Organizer.Name_Localised = ""
-        Resource_Organizer.Handler = ""
+        ResetResourceOrganizer()
     end
 end

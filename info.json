@@ -1,6 +1,6 @@
 {
     "name": "OrePatchOrganizer",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "factorio_version": "1.1",
     "title": "Resource Patch Organizer",
     "author": "PiggyWhiskey",
@@ -11,6 +11,7 @@
         "flib >= 0.7.0",
         "?vtk-deep-core-mining >= 2.0.0",
         "?space-exploration >= 0.6.1",
-        "?Krastorio2 >= 0.6.0"
+        "?Krastorio2 >= 0.6.0",
+        "?bzgas >= 0.0.1"
     ]
 }

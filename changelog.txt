@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.1.8
+Date: 2024-06-01
+  Changes:
+    - Added BZ Mod and Pyanodon's mods compatibility
+    - Restructured resource handling to be more modular (Controlled within resourceData.lua)
+---------------------------------------------------------------------------------------------------
 Version: 0.1.7
 Date: 2024-01-08
   Changes:
