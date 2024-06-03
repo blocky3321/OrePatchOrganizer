@@ -2,7 +2,7 @@ require "lib.resourceData"
 
 Resource_Organizer = {
     Name = "", --[[@as string]]           --In-Game Name
-    Count = 0, --[[@as integer]]          --Amount of resources caught
+    Count = 0,                            --Amount of resources caught
     CountPerCell = 0, --[[@as integer]]   --Per Cell count
     Surface = "", --[[@as string]]        --Surface collected from
     Category = "", --[[@as string]]       --Resource category

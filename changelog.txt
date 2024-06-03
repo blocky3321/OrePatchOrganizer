@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.1.9
+Date: 2024-06-03
+  Changes:
+    - Added remaining Pyanodon's mods compatibility
+    - Removed Unsigned MAX INT limit (~ 4 billion) for resource placement.
+---------------------------------------------------------------------------------------------------
 Version: 0.1.8
 Date: 2024-06-01
   Changes:

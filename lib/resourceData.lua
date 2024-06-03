@@ -62,19 +62,47 @@ AddToTable("Vortek_Deep_Core_Mining", "vtk-deepcore-mining-ore-patch", "solid", 
 
 AddToTable("BZ_Natural_Gas", "gas", "fluid", "spaced", 3)
 
-AddToTable("Pyanodon", "borax", "solid", "spread", 0)
-AddToTable("Pyanodon", "niobium", "solid", "spread", 0)
-AddToTable("Pyanodon", "nexelit-rock", "solid", "spaced", 11)
-AddToTable("Pyanodon", "zinc-rock", "solid", "spaced", 11)
-AddToTable("Pyanodon", "coal-rock", "solid", "spaced", 11)
-AddToTable("Pyanodon", "chromium-rock", "solid", "spaced", 11)
-AddToTable("Pyanodon", "salt-rock", "solid", "spaced", 11)
-AddToTable("Pyanodon", "lead-rock", "solid", "spaced", 11)
-AddToTable("Pyanodon", "uranium-rock", "solid", "spaced", 11)
-AddToTable("Pyanodon", "quartz-rock", "solid", "spaced", 13)
-AddToTable("Pyanodon", "nickel-rock", "solid", "spaced", 13)
 AddToTable("Pyanodon", "iron-rock", "solid", "spaced", 13)
 AddToTable("Pyanodon", "copper-rock", "solid", "spaced", 13)
-AddToTable("Pyanodon", "tin-rock", "solid", "spaced", 13)
-AddToTable("Pyanodon", "aluminium-rock", "solid", "spaced", 19) --UK Spelling aluminium
+
+
+AddToTable("Pyanodon", "basic-with-fluid", "solid", "spread", 0)
+AddToTable("Pyanodon", "ore-nexelit", "solid", "spread", 0)
+AddToTable("Pyanodon", "nexelit-rock", "solid", "spaced", 11)
 AddToTable("Pyanodon", "titanium-rock", "solid", "spaced", 23)
+AddToTable("Pyanodon", "raw-coal", "solid", "spread", 0)
+AddToTable("Pyanodon", "coal-rock", "solid", "spaced", 11)
+AddToTable("Pyanodon", "ore-tin", "solid", "spread", 0)
+AddToTable("Pyanodon", "tin-rock", "solid", "spaced", 13)
+AddToTable("Pyanodon", "ore-chromium", "solid", "spread", 0)
+AddToTable("Pyanodon", "chromium-rock", "solid", "spaced", 11)
+AddToTable("Pyanodon", "ore-aluminium", "solid", "spread", 0) --UK Spelling aluminium
+AddToTable("Pyanodon", "aluminium-rock", "solid", "spaced", 19) --UK Spelling aluminium
+AddToTable("Pyanodon", "ore-nickel", "solid", "spread", 0)
+AddToTable("Pyanodon", "nickel-rock", "solid", "spaced", 13)
+AddToTable("Pyanodon", "uranium", "solid", "spread", 0)
+AddToTable("Pyanodon", "uranium-rock", "solid", "spaced", 11)
+
+AddToTable("Pyanodon", "borax", "solid", "spread", 0)
+AddToTable("Pyanodon", "niobium", "solid", "spread", 0)
+
+AddToTable("Pyanodon", "zinc-rock", "solid", "spaced", 11)
+AddToTable("Pyanodon", "salt-rock", "solid", "spaced", 11)
+AddToTable("Pyanodon", "lead-rock", "solid", "spaced", 11)
+
+AddToTable("Pyanodon", "quartz-rock", "solid", "spaced", 13)
+AddToTable("Pyanodon Petroleum", "sulfur-patch", "solid", "spaced", 7)
+AddToTable("Pyanodon Petroleum", "bitumen-seep", "fluid", "spaced", 11)
+AddToTable("Pyanodon Petroleum", "oil-sand", "fluid", "spaced", 11)
+
+AddToTable("Pyanodon High Tech", "phosphate", "solid", "spaced", 9)
+AddToTable("Pyanodon High Tech", "phosphate-rock-02", "solid", "spaced", 9)
+AddToTable("Pyanodon High Tech", "rare-earth", "solid", "spaced", 9)
+AddToTable("Pyanodon Alternate Energy", "ree", "solid", "spread", 0)
+AddToTable("Pyanodon Alternate Energy", "geothermal-crack", "solid", "spread", 0)
+AddToTable("Pyanodon Alternate Energy", "antimonium", "solid", "spread", 0)
+AddToTable("Pyanodon Alien Life", "ore-bioreserve", "solid", "spread", 0)
+
+AddToTable("Pyanodon Fusion Energy", "molybdenum", "solid", "spread", 0)
+AddToTable("Pyanodon Fusion Energy", "volcanic-pipe", "solid", "spaced", 7)
+AddToTable("Pyanodon Fusion Energy", "regolite", "solid", "spaced", 7)
