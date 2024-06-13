@@ -93,7 +93,7 @@ AddToTable("Pyanodon", "lead-rock", "solid", "spaced", 11)
 AddToTable("Pyanodon", "quartz-rock", "solid", "spaced", 13)
 AddToTable("Pyanodon Petroleum", "sulfur-patch", "solid", "spaced", 7)
 AddToTable("Pyanodon Petroleum", "bitumen-seep", "fluid", "spaced", 11)
-AddToTable("Pyanodon Petroleum", "oil-sand", "fluid", "spaced", 11)
+AddToTable("Pyanodon Petroleum", "oil-sand", "fluid", "spread", 0)
 
 AddToTable("Pyanodon High Tech", "phosphate", "solid", "spaced", 9)
 AddToTable("Pyanodon High Tech", "phosphate-rock-02", "solid", "spaced", 9)
