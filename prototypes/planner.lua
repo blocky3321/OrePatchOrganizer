@@ -14,26 +14,26 @@ data:extend({
         order = "c[automated-construction]-a[oreorganizer]",
         stack_size = 1,
         stackable = false,
-        selection_color = { r = 1, g = 0, b = 0 },
-        alt_selection_color = { r = 0, g = 1, b = 0 },
-        selection_mode = { "any-entity" },
-        alt_selection_mode = { "any-entity" },
-        selection_cursor_box_type = "copy",
-        alt_selection_cursor_box_type = "blueprint-snap-rectangle", --blueprint-snap-rectangle to have round numbers
-        entity_filter_mode = "whitelist",
-        alt_entity_filter_mode = "whitelist"
+        --skip_fog_of_war = true,
+        select = {
+            mode = "any-entity",
+            border_color = { r = 1, g = 0, b = 0 },
+            cursor_box_type = "copy",
+            entity_type_filters = { "resource" }
+        },
+        alt_select = {
+            mode = "any-entity",
+            border_color = { r = 0, g = 1, b = 0 },
+            cursor_box_type = "blueprint-snap-rectangle"
+        }
     },
     {
         type = "shortcut",
         name = "ore-patch-organizer",
-        icon = {
-            filename = "__OrePatchOrganizer__/organizer.png",
-            size = 64,
-            flags = {
-                "mipmap"
-            },
-            mipmaps = 4,
-        },
+        icon = "__OrePatchOrganizer__/organizer.png",
+        icon_size = 64,
+        small_icon = "__OrePatchOrganizer__/organizer.png",
+        small_icon_size = 64,
         order = "o[ore-organizer]",
         action = "spawn-item",
         localised_name = { "item-name.ore-patch-organizer" },
