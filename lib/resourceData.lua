@@ -52,6 +52,8 @@ end
 
 AddToTable("Vanilla", "basic-solid", "solid", "spread", 0)
 AddToTable("Vanilla", "basic-fluid", "fluid", "spaced", 3)
+AddToTable("Vanilla", "hard-solid", "solid", "spread", 0)
+
 
 AddToTable("Krastorio2", "hard-resource", "solid", "spread", 0)
 AddToTable("Krastorio2", "kr-quarry", "solid", "spaced", 7)
