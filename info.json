@@ -1,6 +1,6 @@
 {
     "name": "OrePatchOrganizer",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "factorio_version": "2.0",
     "title": "Resource Patch Organizer",
     "author": "PiggyWhiskey",
@@ -14,6 +14,7 @@
         "?Krastorio2 >= 0.6.0",
         "?bzgas >= 0.0.1",
         "?pyrawores >= 2.0.0",
-        "?pycoalprocessing >= 1.0.0"
+        "?pycoalprocessing >= 1.0.0",
+        "?cursedFMD >= 0.2.0"
     ]
 }
