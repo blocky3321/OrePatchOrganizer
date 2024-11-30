@@ -1,6 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.3
+Date: 2024-11-30
+  Changes:
+    - Modified fluid placement to make it easier to align to selected area
+    - Corrected fluid placement spacing
+    - Added Debug setting in Player Settings (Printing extra information)
+---------------------------------------------------------------------------------------------------
 Version: 0.2.2
-Date: 2024-10-27
+Date: 2024-11-30
   Changes:
     - Added compatibility for Cursed Filter Mining Drill
 ---------------------------------------------------------------------------------------------------

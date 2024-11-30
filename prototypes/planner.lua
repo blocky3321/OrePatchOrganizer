@@ -1,3 +1,4 @@
+---@diagnostic disable-next-line: undefined-global
 data:extend({
     {
         type = "selection-tool",

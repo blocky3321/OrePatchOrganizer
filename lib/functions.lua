@@ -13,16 +13,18 @@ Resource_Organizer = {
     AllowSolids = true, --[[@as boolean]]
     AllowFluids = true, --[[@as boolean]]
     AllowMixing = true, --[[@as boolean]]
-    MachineSize = 0 --[[@as integer]]
+    MachineSize = 0, --[[@as integer]]
+    Debug = false --[[@as boolean]]
 }
 
 --Set Resource_Organizer settings, allowing run-time modifications
-local function UpdateStoredSettings()
+local function UpdateStoredSettings(event)
     Resource_Organizer.Grid_Spacing = settings.global["resource-patch-organizer-grid-spacing"].value
     Resource_Organizer.LockSurface = settings.global["resource-patch-organizer-lock-surface"].value
     Resource_Organizer.AllowSolids = settings.global["resource-patch-organizer-allow-solids"].value
     Resource_Organizer.AllowFluids = settings.global["resource-patch-organizer-allow-fluids"].value
     Resource_Organizer.AllowMixing = settings.global["resource-patch-organizer-allow-mixing"].value
+    Resource_Organizer.Debug = settings.get_player_settings(event.player_index)["resource-patch-organizer-debug"].value
 end
 
 --- @param InputString string String To Format To Camel Case
@@ -156,7 +158,16 @@ function On_Player_Selected_Area(event)
     --Only handle the ore patch organiser
     if event.item == "ore-patch-organizer" then
         --Update Settings allowing Map/Per-Player modifications
-        UpdateStoredSettings()
+        UpdateStoredSettings(event)
+
+        if Resource_Organizer.Debug then
+            game.print({ "", "Debug Information: On_Player_Selected_Area" })
+            game.print({ "", "Surface: ", ConvertStringToCamelCase(Resource_Organizer.Surface) })
+            game.print({ "", "Name: ", Resource_Organizer.Name })
+            game.print({ "", "Count: ", Resource_Organizer.Count })
+            game.print({ "", "Grid Spacing: ", Resource_Organizer.Grid_Spacing })
+            game.print({ "", "Machine Size: ", Resource_Organizer.MachineSize })
+        end
 
         --Skip 0 size selection
         if IsZeroSize(event.area) then return end
@@ -207,7 +218,20 @@ function On_Player_Alt_Selected_Area(event)
     -- Only ore patch organizer
     if event.item == "ore-patch-organizer" then
         --Update Settings allowing Map/Per-Player modifications
-        UpdateStoredSettings()
+        UpdateStoredSettings(event)
+
+        if Resource_Organizer.Debug then
+            game.print({ "", "Debug Information: On_Player_Alt_Selected_Area" })
+            game.print({ "", "Surface: ", ConvertStringToCamelCase(Resource_Organizer.Surface) })
+            game.print({ "", "Name: ", Resource_Organizer.Name })
+            game.print({ "", "Count: ", Resource_Organizer.Count })
+            game.print({ "", "Grid Spacing: ", Resource_Organizer.Grid_Spacing })
+            game.print({ "", "Machine Size: ", Resource_Organizer.MachineSize })
+            game.print({ "", "Event X Left_Top: ", event.area.left_top.x })
+            game.print({ "", "Event X Right_Bottom: ", event.area.right_bottom.x })
+            game.print({ "", "Event Y Left_Top: ", event.area.left_top.y })
+            game.print({ "", "Event Y Right_Bottom: ", event.area.right_bottom.y })
+        end
 
         -- No area selected
         if IsZeroSize(event.area) then return end
@@ -306,7 +330,10 @@ function On_Player_Alt_Selected_Area(event)
             local totalX = math.floor((event.area.right_bottom.x - event.area.left_top.x + machineSize) / tileGrid)
             local totalY = math.floor((event.area.right_bottom.y - event.area.left_top.y + machineSize) / tileGrid)
 
-
+            if Resource_Organizer.Debug then
+                game.print({ "", "Total X: ", totalX })
+                game.print({ "", "Total Y: ", totalY })
+            end
             if totalX <= 0 or totalY <= 0 then
                 --Area too small - Print Single instance
                 event.surface.create_entity({
@@ -323,11 +350,17 @@ function On_Player_Alt_Selected_Area(event)
                     --Iterate y axis
                     for y = 0, (totalY - 1) do
                         --Print Fluids
+                        if Resource_Organizer.Debug then
+                            game.print({ "", "X: ", event.area.left_top.x + (x * tileGrid) + math.ceil(machineSize / 2) })
+                            game.print({ "", "Y: ", event.area.left_top.y + (y * tileGrid) + math.ceil(machineSize / 2) })
+                        end
                         event.surface.create_entity({
                             name = Resource_Organizer.Name,
                             amount = math.min(Resource_Organizer.Count, Resource_Organizer.CountPerCell),
-                            position = { event.area.left_top.x + (x * tileGrid),
-                                event.area.left_top.y + (y * tileGrid) }
+                            position = { 
+                                event.area.left_top.x + (x * tileGrid) + math.ceil(machineSize / 2),
+                                event.area.left_top.y + (y * tileGrid) + math.ceil(machineSize / 2)
+                            }
                         })
                         Resource_Organizer.Count = Resource_Organizer.Count -
                             math.min(Resource_Organizer.Count, Resource_Organizer.CountPerCell)

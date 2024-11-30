@@ -1,3 +1,4 @@
+---@diagnostic disable-next-line: undefined-global
 data:extend({
     {
         type = "bool-setting",
@@ -35,5 +36,12 @@ data:extend({
         setting_type = "runtime-global",
         default_value = true,
         order = "a5",
+    },
+    {
+        type = "bool-setting",
+        name = "resource-patch-organizer-debug",
+        setting_type = "runtime-per-user",
+        default_value = false,
+        order = "a1",
     }
 })
