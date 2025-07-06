@@ -58,6 +58,7 @@ AddToTable("Vanilla", "hard-solid", "solid", "spread", 0)
 AddToTable("Krastorio2", "hard-resource", "solid", "spread", 0)
 AddToTable("Krastorio2", "kr-quarry", "solid", "spaced", 7)
 AddToTable("Krastorio2", "oil", "fluid", "spaced", 3)
+AddToTable("Krastorio2", "kr-oil", "fluid", "spaced", 3)
 
 AddToTable("Vortek_Deep_Core_Mining", "vtk-deepcore-mining-crack", "solid", "spaced", 9)
 AddToTable("Vortek_Deep_Core_Mining", "vtk-deepcore-mining-ore-patch", "solid", "spaced", 5)
